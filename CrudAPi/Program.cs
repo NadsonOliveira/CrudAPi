@@ -8,6 +8,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Registrar o serviço com a interface
 builder.Services.AddScoped<IClienteInterface, ClienteService>();
 
+var MyallowSpecific = "MyallowSpecific";
+
+
+// Adicionar o serviço CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyallowSpecific", policy =>
+        policy.WithOrigins("http://localhost:5173") // URL do frontend
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials()); // Permitir credenciais (caso seja necessário)
+});
+
+
+
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -31,6 +47,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Usar a política CORS
+app.UseCors("MyallowSpecific");
 
 app.UseAuthorization();
 
